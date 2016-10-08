@@ -23,6 +23,7 @@ pub type backtrace_error_callback =
               errnum: c_int);
 pub enum backtrace_state {}
 
+#[cfg(not(target_os = "emscripten"))]
 extern {
     pub fn backtrace_create_state(filename: *const c_char,
                                   threaded: c_int,
@@ -39,3 +40,19 @@ extern {
                             error: backtrace_error_callback,
                             data: *mut c_void) -> c_int;
 }
+
+#[cfg(target_os = "emscripten")]
+    pub fn backtrace_create_state(_filename: *const c_char,
+                                  _threaded: c_int,
+                                  _error: backtrace_error_callback,
+                                  _data: *mut c_void) -> *mut backtrace_state { std::ptr::null_mut() }
+    pub fn backtrace_syminfo(_state: *mut backtrace_state,
+                             _addr: uintptr_t,
+                             _cb: backtrace_syminfo_callback,
+                             _error: backtrace_error_callback,
+                             _data: *mut c_void) -> c_int { 0 }
+    pub fn backtrace_pcinfo(_state: *mut backtrace_state,
+                            _addr: uintptr_t,
+                            _cb: backtrace_full_callback,
+                            _error: backtrace_error_callback,
+                            _data: *mut c_void) -> c_int { 0 }

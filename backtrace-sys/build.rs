@@ -26,6 +26,11 @@ fn main() {
         return
     }
 
+    // libbacktrace can't be built for emscripten targets at the moment
+    if target.contains("emscripten") {
+        return
+    }
+
     let cfg = gcc::Config::new();
     let compiler = cfg.get_compiler();
     let mut flags = OsString::new();
