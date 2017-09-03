@@ -24,7 +24,7 @@ impl Dylib {
 
     pub unsafe fn init(&self, path: &str) -> bool {
         let name = CString::new(path).unwrap();
-        let ptr = libc::dlopen(name.as_ptr(), libc::RTLD_LAZY);
+        let ptr = libc::dlopen(name.as_ptr() as *const i8, libc::RTLD_LAZY);
         if ptr.is_null() {
             return false
         }
