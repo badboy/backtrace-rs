@@ -38,7 +38,9 @@ fn main() {
     // the less efficient `read`-based code.
     // Using `mmap` on macOS causes weird isseus - see
     // https://github.com/rust-lang/rust/pull/45866
-    if target.contains("windows") || target.contains("darwin") {
+    // On Android the `getpagesize` symbol might not exist (on older Android versions).
+    // We avoid it being used by avoiding the mmap implementation.
+    if target.contains("windows") || target.contains("darwin") || target.contains("android") {
         build.file("src/libbacktrace/read.c");
     } else {
         build.file("src/libbacktrace/mmapio.c");
